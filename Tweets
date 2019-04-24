@@ -1,0 +1,53 @@
+from selenium import webdriver
+
+
+
+def get_url_search(query):
+    url_ = 'https://twitter.com/search?q=' + str(query) + '&src=typd'
+    return url_
+
+
+url = get_url_search('formula1')
+
+driver = webdriver.Chrome(executable_path='chromedriver.exe')
+driver.get('https://twitter.com/search?q=%23Formula1&src=tyah')
+
+number = 0
+i = 0
+timestamps = []
+now = 'Oct'
+
+while i < 10:
+    # extract all the tweets:
+
+    tweet_dates = driver.find_elements_by_class_name('_timestamp')
+
+    for timestamp in tweet_dates:
+        timestamps.append(timestamp.text)
+    # find number of visible tweets:
+    number_of_tweets = len(timestamps)
+    number += number_of_tweets
+    # keep scrolling:
+    driver.execute_script("arguments[0].scrollIntoView();", tweet_dates[-1])
+    i+= 1
+
+
+def track_tweet_months():
+    months = {'Jan':0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May':0, 'Jun':0, 'Jul':0, 'Aug':0, 'Sep':0, 'Oct':0, 'Nov':0, 'Dec':0}
+    for time in timestamps:
+        time = str(time)
+        if time[0].isalpha():
+            months[time[:3]] += 1
+        else:
+            months[now] += 1
+
+    return months
+
+print(timestamps)
+print(track_tweet_months())
+
+print(number)
+#
+# for tweet in driver.find_elements_by_class_name("stream-item"):
+#     print(tweet.text)
+
